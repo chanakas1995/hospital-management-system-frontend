@@ -3,6 +3,11 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
+import validator from "./plugins/validator";
+import moment from "./plugins/moment";
+
+Vue.use(moment);
+Vue.use(validator);
 
 Vue.config.productionTip = false;
 
