@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import patientService from "../../services/patient.service";
-import PatientForm from "../reusables/forms/PatientForm.component.vue";
-import PatientModel from "../../models/Patient.model";
+import patientService from "../../../services/patient.service";
+import PatientForm from "../../reusables/forms/PatientForm.component.vue";
+import PatientModel from "../../../models/Patient.model";
 export default {
   name: "CreatePatient",
   components: { PatientForm },

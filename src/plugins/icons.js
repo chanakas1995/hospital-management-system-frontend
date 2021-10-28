@@ -1,4 +1,5 @@
 export default {
+  admission: "fa-file-medical",
   cancel: "fa-times",
   check: "fa-check",
   checkCircle: "fa-check-circle",

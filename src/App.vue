@@ -13,7 +13,7 @@
       ></v-app-bar-nav-icon>
     </v-app-bar>
 
-    <v-main>
+    <v-main class="mb-15">
       <v-container fluid>
         <router-view></router-view>
       </v-container>
@@ -46,7 +46,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-overlay :value="overlay">
+    <v-overlay :value="overlay" z-index="1500">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
   </v-app>

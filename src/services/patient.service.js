@@ -2,6 +2,7 @@ import httpService from "./http.service";
 
 export default {
   getAll: () => httpService.get("patients"),
+  getOptions: () => httpService.get("patients/options"),
   find: (patientUuid) => httpService.get(`patients/${patientUuid}`),
   save: (payload) => httpService.post("patients", payload),
   update: (patientUuid, payload) =>

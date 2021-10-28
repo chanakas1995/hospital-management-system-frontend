@@ -5,7 +5,6 @@
       :headers="headers"
       title="Patients Management"
       icon="patient"
-      :to="{ name: 'users/create' }"
       :handleAddNew="handleAddNew"
     >
       <template v-slot:actions="{ item }">
@@ -32,8 +31,8 @@ import ItemManagement from "../components/reusables/ItemManagement.component.vue
 import patientService from "../services/patient.service";
 import DeleteConfirmation from "../components/reusables/DeleteConfirmation.component.vue";
 import TableActionButton from "../components/reusables/TableActionButton.component.vue";
-import CreatePatient from "../components/popups/CreatePatient.popup.vue";
-import EditPatient from "../components/popups/EditPatient.popup.vue";
+import CreatePatient from "../components/popups/patient/CreatePatient.popup.vue";
+import EditPatient from "../components/popups/patient/EditPatient.popup.vue";
 
 export default {
   name: "PatientList",
@@ -74,7 +73,7 @@ export default {
     },
     handleDelete(item) {
       this.$refs.deleteConfirmation
-        .confirm(item.fullName)
+        .confirm(item.name)
         .then(() => {
           patientService.delete(item.uuid).then(() => {
             this.init();
