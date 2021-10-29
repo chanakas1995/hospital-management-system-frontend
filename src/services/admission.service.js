@@ -2,7 +2,7 @@ import httpService from "./http.service";
 
 export default {
   getAll: () => httpService.get("admissions"),
-  find: (patientUuid) => httpService.get(`admissions/${patientUuid}`),
+  find: (admissionUuid) => httpService.get(`admissions/${admissionUuid}`),
   save: (payload) => {
     const data = {
       ...payload,
@@ -12,14 +12,25 @@ export default {
     };
     return httpService.post("admissions", data);
   },
-  update: (patientUuid, payload) => {
+  update: (admissionUuid, payload) => {
     const data = {
       ...payload,
       branch: { id: payload.branch },
       ward: { id: payload.ward },
       patient: { id: payload.patient },
     };
-    return httpService.put(`admissions/${patientUuid}`, data);
+    return httpService.put(`admissions/${admissionUuid}`, data);
   },
-  delete: (patientUuid) => httpService.delete(`admissions/${patientUuid}`),
+  delete: (admissionUuid) => httpService.delete(`admissions/${admissionUuid}`),
+  discharge: (admissionUuid) =>
+    httpService.put(`admissions/discharge/${admissionUuid}`),
+  transfer: (admissionUuid, payload) => {
+    const data = {
+      ward: { id: payload.toWard },
+      branch: { id: payload.toBranch },
+      patient: { id: payload.patient },
+      notes: payload.notes,
+    };
+    return httpService.post(`admissions/transfer/${admissionUuid}`, data);
+  },
 };

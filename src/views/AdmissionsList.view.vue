@@ -6,6 +6,7 @@
       title="Admissions Management"
       icon="admission"
       :handleAddNew="handleAddNew"
+      sortBy="dischargedDate"
     >
       <template v-slot:patientName="{ item }">
         {{ item.patient.name }}
@@ -19,16 +20,45 @@
       <template v-slot:wardName="{ item }">
         {{ item.ward.wardName }}
       </template>
+      <template v-slot:status="{ item }">
+        <v-chip :color="item.dischargedDate ? 'success' : 'primary'">
+          <v-icon left small class="ml-1">{{
+            item.dischargedDate ? "$health" : "$treatment"
+          }}</v-icon>
+          {{ item.dischargedDate ? "Discharged" : "In Treatments" }}
+        </v-chip>
+      </template>
       <template v-slot:actions="{ item }">
-        <TableActionButton :handleClick="handleEdit" :item="item" icon="edit" />
+        <TableActionButton
+          :handleClick="handleDischarge"
+          :item="item"
+          icon="discharge"
+          color="purple"
+          v-if="!item.dischargedDate"
+        />
+        <TableActionButton
+          :handleClick="handleTransfer"
+          :item="item"
+          icon="transfer"
+          v-if="!item.dischargedDate"
+        />
+        <TableActionButton
+          :handleClick="handleEdit"
+          :item="item"
+          icon="edit"
+          color="success"
+          v-if="!item.dischargedDate"
+        />
         <TableActionButton
           :handleClick="handleDelete"
           :item="item"
           icon="delete"
+          color="error"
+          v-if="!item.dischargedDate"
         />
       </template>
     </ItemManagement>
-    <DeleteConfirmation ref="deleteConfirmation" />
+    <Confirmation ref="confirmation" />
     <CreateAdmission
       :open="openCreateNew"
       :handleClose="handleClose"
@@ -43,6 +73,13 @@
       :patients="patients"
       :branches="branches"
     />
+    <TransferAdmission
+      :handleSave="handleTransferComplete"
+      :handleClose="handleClose"
+      :admission="tranferedItem"
+      :patients="patients"
+      :branches="branches"
+    />
     <CreatePatient :handleSaveComplete="handleSavePatientComplete" />
     <v-speed-dial right bottom fixed absolute open-on-hover>
       <template v-slot:activator>
@@ -50,7 +87,7 @@
           <v-icon>$plus</v-icon>
         </v-btn>
       </template>
-      <v-btn fab dark small color="primary" @click="openCreatePatientPopup">
+      <v-btn fab dark small color="purple" @click="openCreatePatientPopup">
         <v-icon>$patient</v-icon>
       </v-btn>
     </v-speed-dial>
@@ -61,22 +98,24 @@
 import ItemManagement from "../components/reusables/ItemManagement.component.vue";
 import patientService from "../services/patient.service";
 import branchService from "../services/branch.service";
-import DeleteConfirmation from "../components/reusables/DeleteConfirmation.component.vue";
+import Confirmation from "../components/reusables/Confirmation.component.vue";
 import TableActionButton from "../components/reusables/TableActionButton.component.vue";
 import CreatePatient from "../components/popups/patient/CreatePatient.popup.vue";
 import CreateAdmission from "../components/popups/admission/CreateAdmission.popup.vue";
 import EditAdmission from "../components/popups/admission/EditAdmission.popup.vue";
+import TransferAdmission from "../components/popups/admission/TransferAdmission.popup.vue";
 import admissionService from "../services/admission.service";
 
 export default {
   name: "AdmissionsList",
   components: {
     ItemManagement,
-    DeleteConfirmation,
+    Confirmation,
     TableActionButton,
     CreateAdmission,
     EditAdmission,
     CreatePatient,
+    TransferAdmission,
   },
   data() {
     return {
@@ -86,12 +125,18 @@ export default {
         { text: "Branch", value: "branchName" },
         { text: "Ward", value: "wardName" },
         { text: "Notes", value: "notes" },
-        { text: "Actions", value: "actions", width: 120, sortable: false },
+        {
+          text: "Status",
+          value: "status",
+          align: "center",
+        },
+        { text: "Actions", value: "actions", width: 240, sortable: false },
       ],
       items: [],
       branches: [],
       patients: [],
       selectedItem: null,
+      tranferedItem: null,
       openCreateNew: false,
     };
   },
@@ -144,7 +189,7 @@ export default {
       this.openCreateNew = true;
     },
     handleDelete(item) {
-      this.$refs.deleteConfirmation
+      this.$refs.confirmation
         .confirm(`${item.patient.name}'s admission`)
         .then(() => {
           admissionService.delete(item.uuid).then(() => {
@@ -158,6 +203,9 @@ export default {
     },
     handleEdit(item) {
       this.selectedItem = item;
+    },
+    handleTransfer(item) {
+      this.tranferedItem = item;
     },
     handleSaveComplete(admission) {
       this.items.push(admission);
@@ -173,6 +221,20 @@ export default {
     handleClose() {
       this.openCreateNew = false;
       this.selectedItem = null;
+      this.tranferedItem = null;
+    },
+    handleTransferComplete() {
+      this.loadAdmissions();
+    },
+    handleDischarge(item) {
+      this.$refs.confirmation
+        .confirm(item.patient.name, "discharge", "purple")
+        .then(() => {
+          admissionService.discharge(item.uuid).then(() => {
+            this.init();
+          });
+        })
+        .catch(() => {});
     },
   },
 };

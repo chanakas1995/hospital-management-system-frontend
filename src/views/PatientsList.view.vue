@@ -8,15 +8,21 @@
       :handleAddNew="handleAddNew"
     >
       <template v-slot:actions="{ item }">
-        <TableActionButton :handleClick="handleEdit" :item="item" icon="edit" />
+        <TableActionButton
+          :handleClick="handleEdit"
+          :item="item"
+          icon="edit"
+          color="success"
+        />
         <TableActionButton
           :handleClick="handleDelete"
           :item="item"
           icon="delete"
+          color="error"
         />
       </template>
     </ItemManagement>
-    <DeleteConfirmation ref="deleteConfirmation" />
+    <Confirmation ref="confirmation" />
     <CreatePatient :handleSaveComplete="handleSaveComplete" />
     <EditPatient
       :handleUpdateComplete="handleUpdateComplete"
@@ -29,7 +35,7 @@
 <script>
 import ItemManagement from "../components/reusables/ItemManagement.component.vue";
 import patientService from "../services/patient.service";
-import DeleteConfirmation from "../components/reusables/DeleteConfirmation.component.vue";
+import Confirmation from "../components/reusables/Confirmation.component.vue";
 import TableActionButton from "../components/reusables/TableActionButton.component.vue";
 import CreatePatient from "../components/popups/patient/CreatePatient.popup.vue";
 import EditPatient from "../components/popups/patient/EditPatient.popup.vue";
@@ -38,7 +44,7 @@ export default {
   name: "PatientList",
   components: {
     ItemManagement,
-    DeleteConfirmation,
+    Confirmation,
     TableActionButton,
     CreatePatient,
     EditPatient,
@@ -72,7 +78,7 @@ export default {
         .catch(() => {});
     },
     handleDelete(item) {
-      this.$refs.deleteConfirmation
+      this.$refs.confirmation
         .confirm(item.name)
         .then(() => {
           patientService.delete(item.uuid).then(() => {

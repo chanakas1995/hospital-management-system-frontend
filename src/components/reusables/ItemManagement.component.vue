@@ -38,6 +38,9 @@
         'show-first-last-page': !$vuetify.breakpoint.mobile,
         'show-current-page': true,
       }"
+      :ripple="false"
+      :sort-by="sortBy"
+      :sort-desc="sortDesc"
     >
       <template
         v-for="header in headers"
@@ -54,7 +57,15 @@
 <script>
 export default {
   name: "ItemManagementComponent",
-  props: ["items", "headers", "icon", "title", "handleAddNew"],
+  props: [
+    "items",
+    "headers",
+    "icon",
+    "title",
+    "handleAddNew",
+    "sortBy",
+    "sortDesc",
+  ],
   data() {
     return {
       search: null,
