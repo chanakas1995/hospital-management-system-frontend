@@ -1,6 +1,6 @@
 <template>
   <v-btn
-    color="primary"
+    :color="color || 'primary'"
     icon
     outlined
     class="mr-1 router-link"
@@ -14,6 +14,6 @@
 <script>
 export default {
   name: "TableActionButton",
-  props: ["to", "handleClick", "item", "icon"],
+  props: ["to", "handleClick", "item", "icon", "color"],
 };
 </script>
