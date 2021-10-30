@@ -20,6 +20,9 @@
       <template v-slot:wardName="{ item }">
         {{ item.ward.wardName }}
       </template>
+      <template v-slot:billAmount="{ item }">
+        {{ `Rs.${item.billAmount.toFixed(2)}` }}
+      </template>
       <template v-slot:status="{ item }">
         <v-chip :color="item.dischargedDate ? 'success' : 'primary'">
           <v-icon left small class="ml-1">{{
@@ -125,6 +128,7 @@ export default {
         { text: "Branch", value: "branchName" },
         { text: "Ward", value: "wardName" },
         { text: "Notes", value: "notes" },
+        { text: "Bill Amount", value: "billAmount", align: "right" },
         {
           text: "Status",
           value: "status",
